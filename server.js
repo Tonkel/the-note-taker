@@ -6,7 +6,7 @@ const notes = require("./db/db.json");
 const { v4: uuidv4 } = require("uuid");
 
 //sets port
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 // sets server
 const app = express();
 //middleware
