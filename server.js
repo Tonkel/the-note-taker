@@ -22,7 +22,17 @@ app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
-app.get("/api/notes", (req, res) => res.json(notes));
+app.get("/api/notes", (req, res) => {
+  fs.readFile("./db/db.json", "utf-8", (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      //parse string data
+      const currentNotes = JSON.parse(data);
+      res.json(currentNotes);
+    }
+  });
+});
 
 app.post("/api/notes", (req, res) => {
   const { title, text } = req.body;
@@ -48,14 +58,14 @@ app.post("/api/notes", (req, res) => {
         //push object into db
         newData.push(newNote);
         //write db
-        fs.writeFile("./db/db.json", JSON.stringify(newData), (err) =>
-          err ? console.log(err) : console.log("success")
-        );
+        fs.writeFile("./db/db.json", JSON.stringify(newData), (err) => {
+          err ? console.log(err) : console.log("success");
+
+          res.status(200).json(response);
+          console.log(response);
+        });
       }
     });
-
-    res.status(200).json(response);
-    console.log(response);
   } else {
     res.status(500).json("Error posting");
   }
@@ -78,7 +88,7 @@ app.delete("/api/notes/:id", (req, res) => {
           const deleted = newData.splice(i, 1);
           //re writes file
           fs.writeFile("./db/db.json", JSON.stringify(newData), (err) =>
-            err ? console.log(err) : console.log(`deleted ${deleted}`)
+            err ? console.log(err) : res.json(deleted)
           );
         }
       }
