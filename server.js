@@ -62,7 +62,6 @@ app.post("/api/notes", (req, res) => {
           err ? console.log(err) : console.log("success");
 
           res.status(200).json(response);
-          console.log(response);
         });
       }
     });
